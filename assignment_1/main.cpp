@@ -37,7 +37,7 @@ public:
         return primeNumbers;
     }
 
-    vector<int> primeRangeThreads(const int &start, const int &end, int &threadNum) {
+    vector<int> primeRange(const int &start, const int &end, int &threadNum) {
         vector<int> primeNumbers;
         int length = end - start;
         int load = length / threadNum;
@@ -45,14 +45,14 @@ public:
         vector<thread> threads;
         threads.reserve(threadNum);
         int startTemp = start;
-        int loadTemp = load;
+        int loadTemp = startTemp + load;
 
         for(int i = 0; i < threadNum; i++) {
-            threads.emplace_back(thread([&, i] {
+            threads.emplace_back(thread([&] {
                 // Each thread calculates the prime in their own range
                 lock_guard<mutex> lock(prime_mutex);
                 vector<int> primeThreads = primeRange(startTemp, loadTemp);
-                startTemp = loadTemp + 1;
+                startTemp += load;
                 loadTemp += load;
                 primeNumbers.reserve(primeNumbers.size() + primeThreads.size());
                 primeNumbers.insert(primeNumbers.end(), primeThreads.begin(), primeThreads.end());
@@ -68,27 +68,32 @@ public:
 
 
 int main() {
-    int start = 0;
-    int end = 2000;
+    int start = 5000;
+    int end = 10000;
     int threads = 10;
     PrimeNumbers primes;
 
     vector<int> primeSingle = primes.primeRange(start, end);
-    vector<int> primeThreads = primes.primeRangeThreads(start, end, threads);
 
-    cout << " Single-threaded prime numbers:" << endl;
+    cout << "\nSingle-threaded prime numbers:" << endl;
     for(int &primeNum : primeSingle) {
         cout << primeNum << " is a prime number."<< " Address is " << &primeNum << endl;
     }
 
-    cout << " Multi-threaded prime numbers:" << endl;
+    vector<int> primeThreads = primes.primeRange(start, end, threads);
+
+    cout << "\nMulti-threaded prime numbers:" << endl;
     for(int &primeNum : primeThreads) {
         cout << primeNum << " is a prime number."<< " Address is " << &primeNum << endl;
     }
 
-    // Checks if both vectors are equal
+
+     // Checks if both vectors are equal
     for(int i = 0; i < primeSingle.size(); i++) {
-        if(primeSingle[i] != primeThreads[i])
+        if(primeSingle[i] != primeThreads[i]){
             cout << "Not equal!" << endl;
+            cout << "Single thread: " << primeSingle[i] << " --- ";
+            cout << "Mutli thread: " << primeThreads[i] << endl;
+        }
     }
 }
