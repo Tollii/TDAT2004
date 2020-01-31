@@ -3,7 +3,6 @@
 #include <vector>
 #include <cmath>
 #include <mutex>
-#define class struct
 
 using namespace std;
 
@@ -28,32 +27,30 @@ private:
     }
 
 public:
-    vector<int> primeRange(const int &start, const int &end) {
+    vector<int> primeRange(int start, const int &end) {
         vector<int> primeNumbers;
-        for(int i = start; i < end; i++) {
-            if(isPrime(i))
-                primeNumbers.push_back(i);
+        for(; start < end; start++) {
+            if(isPrime(start))
+                primeNumbers.push_back(start);
         }
         return primeNumbers;
     }
 
-    vector<int> primeRange(const int &start, const int &end, int &threadNum) {
+    vector<int> primeRange(int start, int end, int &threadNum) {
         vector<int> primeNumbers;
-        int length = end - start;
-        int load = length / threadNum;
         mutex prime_mutex;
         vector<thread> threads;
         threads.reserve(threadNum);
-        int startTemp = start;
-        int loadTemp = startTemp + load;
+        int range = (end - start) / threadNum;
+        end = start + range;
 
+        // Each thread calculates the primes in their own range
         for(int i = 0; i < threadNum; i++) {
             threads.emplace_back(thread([&] {
-                // Each thread calculates the prime in their own range
                 lock_guard<mutex> lock(prime_mutex);
-                vector<int> primeThreads = primeRange(startTemp, loadTemp);
-                startTemp += load;
-                loadTemp += load;
+                vector<int> primeThreads = primeRange(start, end);
+                start += range;
+                end += range;
                 primeNumbers.reserve(primeNumbers.size() + primeThreads.size());
                 primeNumbers.insert(primeNumbers.end(), primeThreads.begin(), primeThreads.end());
             }));
@@ -73,27 +70,24 @@ int main() {
     int threads = 10;
     PrimeNumbers primes;
 
+    cout << "\nSingle-threaded prime numbers..." << endl;
     vector<int> primeSingle = primes.primeRange(start, end);
-
-    cout << "\nSingle-threaded prime numbers:" << endl;
     for(int &primeNum : primeSingle) {
         cout << primeNum << " is a prime number."<< " Address is " << &primeNum << endl;
     }
 
+    cout << "\nMulti-threaded prime numbers..." << endl;
     vector<int> primeThreads = primes.primeRange(start, end, threads);
-
-    cout << "\nMulti-threaded prime numbers:" << endl;
     for(int &primeNum : primeThreads) {
         cout << primeNum << " is a prime number."<< " Address is " << &primeNum << endl;
     }
-
 
      // Checks if both vectors are equal
     for(int i = 0; i < primeSingle.size(); i++) {
         if(primeSingle[i] != primeThreads[i]){
             cout << "Not equal!" << endl;
             cout << "Single thread: " << primeSingle[i] << " --- ";
-            cout << "Mutli thread: " << primeThreads[i] << endl;
+            cout << "Multi thread: " << primeThreads[i] << endl;
         }
     }
 }
