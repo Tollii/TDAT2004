@@ -36,4 +36,3 @@ while True:
 	client.sendall(bytes(json_data,'UTF-8'))
 	in_data = client.recv(1024)
 	print("From Server :", in_data.decode())
-	client.close()
