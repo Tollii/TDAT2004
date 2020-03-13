@@ -13,27 +13,26 @@ class Server(threading.Thread):
 
 	def run(self):
 		print("Connection from : ", client_address)
-		while True:
-			msg = ''
-			with open('index.html', 'r') as file:
-				for line in file: 
-					msg += line
+		
+		msg = ''
+		with open('index.html', 'r') as file:
+			for line in file: 
+				msg += line
 
-			msg += '<ul> <li>'
-			header = str(self.csocket.recv(2048))
-			list = re.sub(r'\\n', '</li> <li>', header)
-			w = re.sub(r'\\r', '', list)
-			print(w)
-			msg += w
-			msg += '</li></ul>'
+		msg += '<ul> <li>'
+		header = str(self.csocket.recv(2048))
+		list = re.sub(r'\\n', '</li> <li>', header)
+		w = re.sub(r'\\r', '', list)
+		print(w)
+		msg += w
+		msg += '</li></ul>'
 
-			self.csocket.sendall(str.encode("""HTTP/1.0 200 OK\n""",'iso-8859-1'))
-			self.csocket.sendall(str.encode('Content-Type: text/html\n', 'iso-8859-1'))
-			self.csocket.send(str.encode('\n'))
-			self.csocket.send(str.encode(msg))
-			self.csocket.shutdown(1)
-			break
-
+		self.csocket.sendall(str.encode("""HTTP/1.0 200 OK\n""",'iso-8859-1'))
+		self.csocket.sendall(str.encode('Content-Type: text/html\n', 'iso-8859-1'))
+		self.csocket.send(str.encode('\n'))
+		self.csocket.send(str.encode(msg))
+		self.csocket.shutdown(1)
+		
 		print("Client at ", client_address, " disconnected...")
 
 
