@@ -7,4 +7,4 @@ Assignment 2 - [More threads and conditional variables](/assignment_2/main.cpp)
 
 Assignment 3 - [Docker](/assignment_3)
 
-Assignment 4 - [Socket programming](/assignment_3)
+Assignment 4 - [Socket programming](/assignment_4)
