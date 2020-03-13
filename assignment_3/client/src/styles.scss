@@ -1,0 +1,71 @@
+
+$body : #313030;
+$primary-color: white;
+$secondary_color : #FFFFFF;
+$console_log_text : #FFFFFF;
+$textfield : #636161;
+$console_log : #636161;
+$tertiary_color: #00b8d4;
+
+body {
+  background: $body;  /* fallback for old browsers */
+
+}
+
+.margin-top-20{
+  margin-top:20px;
+}
+
+.codeInput{
+  width: 100%;
+  height: 500px;
+  color:$primary-color;
+  padding: 10px;
+  background: $textfield;
+  font-size: 16px;
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 200px;
+}
+
+.codeInput:focus{
+  outline-color: teal;
+  outline-width: 3px;
+}
+
+.fileType{
+  background: $secondary_color;
+  position: relative;
+  text-align: center;
+  color:black;
+  margin-top: -20px;
+  margin-right: 25px;
+  width: 80px;
+  font-size: 13px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  float: right;
+  right: 0;
+}
+
+.console{
+  width: 100%;
+  height:200px;
+  padding:10px;
+  font-size: 16px;
+  color:$console_log_text;
+  cursor: text;
+  background: $console_log;
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 200px;
+  white-space: pre-wrap;
+  overflow-y: scroll;
+  resize: both;
+}
+
+.wrapper{
+  font-size: 24px;
+  padding: 50px 200px 50px 200px;
+  color:$secondary_color;
+}

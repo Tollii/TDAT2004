@@ -65,9 +65,18 @@ public:
             unique_lock<mutex> lock(task_mutex);
             tasks.emplace_back(task);
         }
-
         task_cv.notify_one();
+    }
 
+    void post_timeout(const function<void()> &task) {
+        if(stopped.load())
+            cerr << "Stopped has already been called" << endl;
+        {
+            this_thread::sleep_for(2s);
+            unique_lock<mutex> lock(task_mutex);
+            tasks.emplace_back(task);
+        }
+        task_cv.notify_one();
     }
 
 };
@@ -82,6 +91,12 @@ int main() {
 
     worker_threads.post([] {
         cout << "Task A start" << endl;
+        this_thread::sleep_for(8s);
+        cout << "Task A end" << endl;
+    });
+
+    worker_threads.post_timeout([] {
+        cout << "Task Awasdasd start" << endl;
         this_thread::sleep_for(8s);
         cout << "Task A end" << endl;
     });
@@ -108,7 +123,7 @@ int main() {
         // Might run in parallel with task A and B
     });
 
-    this_thread::sleep_for(20s);
+    this_thread::sleep_for(15s);
     event_loop.stop();
     worker_threads.stop();
     return -1;
