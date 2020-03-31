@@ -12,3 +12,5 @@ Assignment 4 - [Socket programming](/assignment_4)
 Assignment 5 - [Socket programming - UDP](/assignment_5)
 
 Assignment 6 - [ORM](/assignment_6)
+
+Assignment 7 - [Web Sockets](/assignment_7)
